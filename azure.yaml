@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/alpha/azure.yaml.json
+
+name: load-it
+resources:
+  ai-project:
+    type: ai.project
+    models:
+      - name: gpt-4o-mini
+        version: "2024-07-18"
+        format: OpenAI
+        sku:
+          name: GlobalStandard
+          usageName: OpenAI.GlobalStandard.gpt-4o-mini
+          capacity: 10
+  load-it:
+    type: host.containerapp
+    uses:
+      - ai-project
+      - redis
+    port: 5050
+  redis:
+    type: db.redis
+  vault:
+    type: keyvault
+services:
+  load-it:
+    project: .
+    host: containerapp
+    language: java
+    docker:
+      path: Dockerfile
